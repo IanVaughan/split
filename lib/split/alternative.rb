@@ -16,7 +16,7 @@ module Split
         @name = name.keys.first
         @weight = name.values.first
       else
-        @name = name
+        @name = name.to_s
         @weight = 1
       end
     end

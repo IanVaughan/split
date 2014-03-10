@@ -18,12 +18,30 @@ describe Split::Helper do
       lambda { ab_test('xyz', ['1', '2', '3']) }.should_not raise_error
     end
 
-    it "should raise the appropriate error when passed integers for alternatives" do
-      lambda { ab_test('xyz', 1, 2, 3) }.should raise_error
+    context "integers" do
+      let!(:abtest) { ab_test('xyz', 1, 2, 3) }
+      let(:experiment) { Split::Experiment.find('xyz') }
+
+      it "should not raise when passed integers for alternatives" do
+        expect { abtest }.to_not raise_error
+      end
+
+      it "should convert them to strings" do
+        experiment.alternatives.map(&:name).should eql(['1', '2', '3'])
+      end
     end
 
-    it "should raise the appropriate error when passed symbols for alternatives" do
-      lambda { ab_test('xyz', :a, :b, :c) }.should raise_error
+    context "symbols as alternatives" do
+      let!(:abtest) { ab_test('xyz', :a, :b, :c) }
+      let(:experiment) { Split::Experiment.find('xyz') }
+
+      it "should not raise an error" do
+        expect { abtest }.to_not raise_error
+      end
+
+      it "should convert them to strings" do
+        expect(experiment.alternatives.map(&:name)).to eql(['a', 'b', 'c'])
+      end
     end
 
     it "should not raise error when passed an array for goals" do

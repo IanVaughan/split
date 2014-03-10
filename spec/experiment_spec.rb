@@ -319,9 +319,20 @@ describe Split::Experiment do
   end
 
   describe 'alternatives passed as non-strings' do
-    it "should throw an exception if an alternative is passed that is not a string" do
-      lambda { Split::Experiment.find_or_create('link_color', :blue, :red) }.should raise_error
-      lambda { Split::Experiment.find_or_create('link_enabled', true, false) }.should raise_error
+    context "using symbols" do
+      let(:experiment) { Split::Experiment.find_or_create('link_color', :blue, :red) }
+
+      it "should throw not throw exception if an alternative is passed that is not a string" do
+        expect { experiment }.to_not raise_error
+      end
+    end
+
+    context "using booleans" do
+      let(:experiment) { Split::Experiment.find_or_create('link_color', true, false) }
+
+      it "should not throw" do
+        expect { experiment }.to_not raise_error
+      end
     end
   end
 
