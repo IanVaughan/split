@@ -8,6 +8,18 @@ module Split
       request.env['SCRIPT_NAME']
     end
 
+    def asset_url(*path_parts)
+      [ asset_path_prefix, path_parts ].join("/").squeeze('/')
+    end
+
+    def asset_path_prefix
+      if Split.configuration.asset_path.nil?
+        request.env['SCRIPT_NAME']
+      else
+        Split.configuration.asset_path
+      end
+    end
+
     def number_to_percentage(number, precision = 2)
       round(number * 100)
     end
